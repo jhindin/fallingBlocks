@@ -11,9 +11,30 @@ var rl = readline.createInterface({
 rl.setPrompt("tetris> ");
 rl.prompt();
 
+function lFunc(letter) {
+    console.log("Create letter " + letter);
+}
+
+function hFunc() {
+    console.log("Help");
+}
+
+
+var cliFunction = {
+    "l": lFunc,
+    "h": hFunc
+};
+
 
 rl.on('line', function(line) {
-    process.stdout.write("'" + line + "'\n");
+    var splitInput = line.split(" ");
+    var cmdStr = splitInput[0];
+    var cmd = cliFunction[cmdStr];
+    if (cmd) {
+	cmd.apply(this, splitInput.splice(1));
+    } else {
+	console.log("Unknown command " + cmdStr);
+    }
     rl.prompt();
 });
 
