@@ -9,6 +9,9 @@ var currentLetter;
 function printField(field) {
     var size = field.size();
 
+    if (currentLetter) 
+	console.log("currentLetter.rotation = ", currentLetter.rotation);
+
     for (var y = 0; y < size.height; y++) {
 	for (var x = 0; x < size.width; x++) {
 	    if (field.isValid([x, y])) {
@@ -16,7 +19,7 @@ function printField(field) {
 		    var letterCoords = currentLetter.gameFieldCoord(currentLetter.coord, currentLetter.rotation, [0,0]);
 		    var inLetter = false;
 		    for (var c of letterCoords) {
-			if (c === [x, y]) {
+			if (c[0] == x && c[1] == y) {
 			    inLetter = true;
 			    process.stdout.write('#');
 			}
@@ -38,6 +41,8 @@ var rl = readline.createInterface({
   output: process.stdout,
   terminal: false
 });
+
+printField(gameField);
 
 rl.setPrompt("tetris> ");
 rl.prompt();
@@ -62,7 +67,6 @@ function lFunc(letter) {
 	console.log("Unknown letter ", letter);
     }
     
-    printField(gameField);
 }
 
 function hFunc() {
@@ -73,7 +77,8 @@ function hFunc() {
 var cliFunction = {
     "l": lFunc,
     "h": hFunc,
-    "d": function() { if (currentLetter) currentLetter.coord = [ currentLetter.coord[0], currentLetter.coord[1] + 1]; printField(gameField); }
+    "d": function() { if (currentLetter) currentLetter.coord = [ currentLetter.coord[0], currentLetter.coord[1] + 1] },
+    "r": function() { if (currentLetter) currentLetter.rotation.r = ((currentLetter.rotation.r + 90) % 360); }
 };
 
 
@@ -86,5 +91,6 @@ rl.on('line', function(line) {
     } else {
 	console.log("Unknown command " + cmdStr);
     }
+    printField(gameField);
     rl.prompt();
 });
