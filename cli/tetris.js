@@ -1,6 +1,25 @@
 var readline = require('readline');
 
-var gamefield = require('../GameField.js');
+var GF = require('../GameField.js');
+
+var gameField = new GF.GameField(6, 8);
+
+function printField(field) {
+    var size = field.size();
+
+    for (var y = 0; y < size.height; y++) {
+	for (var x = 0; x < size.width; x++) {
+	    if (field.isValid([x, y]))
+		process.stdout.write(".");
+	    else
+		process.stdout.write("*");
+	}
+	process.stdout.write("\n");
+    }
+}
+
+
+
 
 var rl = readline.createInterface({
   input: process.stdin,
@@ -11,8 +30,11 @@ var rl = readline.createInterface({
 rl.setPrompt("tetris> ");
 rl.prompt();
 
+
+
 function lFunc(letter) {
     console.log("Create letter " + letter);
+    printField(gameField);
 }
 
 function hFunc() {
