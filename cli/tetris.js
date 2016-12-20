@@ -1,39 +1,67 @@
 var readline = require('readline');
-
 var GF = require('../GameField.js');
+var letter = require('../Letter.js')
 
 var gameField = new GF.GameField(6, 8);
+var currentLetter;
+
 
 function printField(field) {
     var size = field.size();
 
     for (var y = 0; y < size.height; y++) {
 	for (var x = 0; x < size.width; x++) {
-	    if (field.isValid([x, y]))
-		process.stdout.write(".");
-	    else
+	    if (field.isValid([x, y])) {
+		if (currentLetter) {
+		    var letterCoords = currentLetter.gameFieldCoord(currentLetter.coord, currentLetter.rotation, [0,0]);
+		    var inLetter = false;
+		    for (var c of letterCoords) {
+			if (c === [x, y]) {
+			    inLetter = true;
+			    process.stdout.write('#');
+			}
+		    }
+		    if (!inLetter)
+			process.stdout.write('.');
+		}
+	    } else {
 		process.stdout.write("*");
+	    }
 	}
 	process.stdout.write("\n");
     }
 }
 
 
-
-
 var rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  terminal: true
+  terminal: false
 });
 
 rl.setPrompt("tetris> ");
 rl.prompt();
 
 
+var letterConstructors = {
+    'L': letter.LetterL,
+    'J': letter.LetterJ,
+    'I': letter.LetterI,
+    'Z': letter.LetterZ,
+    'S': letter.LetterS,
+    'O': letter.LetterO
+}
+
 
 function lFunc(letter) {
     console.log("Create letter " + letter);
+    var cnstr = letterConstructors[letter];
+    if (cnstr) {
+	currentLetter = new cnstr();
+    } else {
+	console.log("Unknown letter ", letter);
+    }
+    
     printField(gameField);
 }
 
@@ -44,7 +72,8 @@ function hFunc() {
 
 var cliFunction = {
     "l": lFunc,
-    "h": hFunc
+    "h": hFunc,
+    "d": function() { if (currentLetter) currentLetter.coord = [ currentLetter.coord[0], currentLetter.coord[1] + 1]; printField(gameField); }
 };
 
 
@@ -59,5 +88,3 @@ rl.on('line', function(line) {
     }
     rl.prompt();
 });
-
-

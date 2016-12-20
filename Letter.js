@@ -23,7 +23,6 @@ Letters.Letter = function() {
     this.rotation = new Letters.Rotation();
 }
 
-
 Letters.Letter.prototype.gameFieldCoord = function(coord, rotation, rotationCenter) {
     var res = [];
 
@@ -93,7 +92,7 @@ Letters.LetterL.prototype = Object.create(Letters.Letter.prototype);
 
 // O Letter
 Letters.LetterO = function() {
-    Letters.LetterO.call(this);
+    Letters.Letter.call(this);
     this.shape = [[0, 0], [0, 1], [1, 1], [1, 0]];
 }
 
@@ -101,7 +100,7 @@ Letters.LetterO.prototype = Object.create(Letters.Letter.prototype);
 
 Letters.LetterO.prototype.gameFieldCoord = function(coord, rotation, rotationCenter)
 {
-    return shape.map((e) => Linear.addVects(coord, e));
+    return this.shape.map((e) => Linear.addVects(coord, e));
 }
 
 // S Letter
